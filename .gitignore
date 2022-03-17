@@ -1,0 +1,9 @@
+.venv
+__pycache__
+.pytest_cache
+
+config/app.env
+config/pgadmin.env
+config/database.env
+
+data/schema.xlsx
