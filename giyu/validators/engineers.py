@@ -6,10 +6,15 @@ from giyu.controllers.pipeline import CustomResponse
 
 class EngineerValidator:
 
-    @staticmethod
-    def get_all():
-        body = request.headers
-        rule = {"token": "required|string|min:1", "id": "required|string|min:1"}
+    def new_engineer():
+        request_body = request.data if request.data != b"" else "{ }"
+        body = json.loads(request_body)
+
+        rule = {
+            "name": "required|string|min:8",
+            "title": "required|string|min:8",
+            "creator": "required|integer|min:1"
+        }
         result, _, errors = validate(body, rule, return_info=True)
 
         res = CustomResponse()
@@ -17,6 +22,3 @@ class EngineerValidator:
         res.set_attr("message", json.dumps(errors))
 
         return res
-
-    def new_engineer():
-        pass

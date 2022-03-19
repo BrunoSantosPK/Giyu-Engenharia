@@ -21,8 +21,8 @@ def seed_engineers():
     session = get_session()
     dt = datetime.utcnow()
     data = [
-        Engineers(UserId=1, Name="Bruno Santos", Title="Engenheiro Químico", CreateOn=dt),
-        Engineers(UserId=1, Name="Jean Meireles", Title="Engenheiro Civil", CreateOn=dt)
+        Engineers(UserId=1, Name="BRUNO SANTOS", Title="Engenheiro Químico", CreateOn=dt),
+        Engineers(UserId=1, Name="JEAN MEIRELES", Title="Engenheiro Civil", CreateOn=dt)
     ]
 
     try:

@@ -9,7 +9,7 @@ Assim, este projeto tem como objetivo prover facilidade na gestão de projetos d
 
 ## Conteúdo
 
-Giuy é composto por três produtos diferentes em abordagem, mas que se comunicam no mesmo ecossistema. São eles: API, UI e Report BI.
+Giyu é composto por três produtos diferentes em abordagem, mas que se comunicam no mesmo ecossistema. São eles: API, UI e Report BI.
 
 A API tem como função permitir a manipulação dos dados de forma segura, abstraindo todas as regras de negócio e validações necessárias para o funcionamento da gestão de projetos e controle de orçamento. É nela que informações como "quantidade prevista" e "quantidade real" são trabalhadas e traduzidas para a modelagem de dados necessária.
 
@@ -29,9 +29,9 @@ Futuramente, todas os sistemas poderão ser inicializados em containers.
 2. A API apresenta alguns códigos de resposta (status code) personalizados para informar estados específicos de resultado. São eles:
 
 Código | Significado
-----|------------
-200 | Sucesso no processamento pelo servidor.
-400 | Requisição inválida.
-401 | Usuário não autenticado ou autorizado.
-444 | Não cumprimento de alguma regra de negócio do sistema.
-500 | Erros de código e exeções de sistema
+-------|------------
+200    | Sucesso no processamento pelo servidor.
+400    | Requisição inválida.
+401    | Usuário não autenticado ou autorizado.
+444    | Não cumprimento de alguma regra de negócio do sistema.
+500    | Erros de código e exeções de sistema
