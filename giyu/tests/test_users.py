@@ -1,6 +1,8 @@
 import random
 import requests
 
+BASE_URL = "http://localhost:3636"
+
 
 def generic_user():
     # Retira o "a" para evitar a possibilidade de ter "admin"
@@ -19,7 +21,7 @@ def test_wrong_req_new_user():
     codes = []
 
     for req in reqs:
-        res = requests.post("http://localhost:3636/user", json=req)
+        res = requests.post(f"{BASE_URL}/user", json=req)
         data = res.json()
         codes.append(data["statusCode"])
 
@@ -28,7 +30,7 @@ def test_wrong_req_new_user():
 
 def test_existing_user():
     req = {"user": "admin"}
-    res = requests.post("http://localhost:3636/user", json=req)
+    res = requests.post(f"{BASE_URL}/user", json=req)
     
     data = res.json()
     assert data["statusCode"] == 444
@@ -36,7 +38,7 @@ def test_existing_user():
 
 def test_add_user():
     req = {"user": generic_user()}
-    res = requests.post("http://localhost:3636/user", json=req)
+    res = requests.post(f"{BASE_URL}/user", json=req)
 
     data = res.json()
     assert data["statusCode"] == 200
@@ -47,7 +49,7 @@ def test_wrong_req_login():
     codes = []
 
     for req in reqs:
-        res = requests.post("http://localhost:3636/login", json=req)
+        res = requests.post(f"{BASE_URL}/login", json=req)
         data = res.json()
         codes.append(data["statusCode"])
 
@@ -56,7 +58,7 @@ def test_wrong_req_login():
 
 def test_user_not_valid():
     req = {"user": "asfggq"}
-    res = requests.post("http://localhost:3636/login", json=req)
+    res = requests.post(f"{BASE_URL}/login", json=req)
 
     data = res.json()
     assert data["statusCode"] == 401
@@ -64,7 +66,7 @@ def test_user_not_valid():
 
 def test_real_login():
     req = {"user": "admin"}
-    res = requests.post("http://localhost:3636/login", json=req)
+    res = requests.post(f"{BASE_URL}/login", json=req)
 
     data = res.json()
     assert data["statusCode"] == 200

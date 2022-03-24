@@ -7,7 +7,7 @@ from giyu.controllers.pipeline import CustomResponse
 class UserValidator:
     
     @staticmethod
-    def new_user():
+    def new_user() -> CustomResponse:
         request_body = request.data if request.data != b"" else "{ }"
         body = json.loads(request_body)
 
@@ -21,7 +21,7 @@ class UserValidator:
         return res
 
     @staticmethod
-    def login():
+    def login() -> CustomResponse:
         request_body = request.data if request.data != b"" else "{ }"
         body = json.loads(request_body)
 

@@ -7,7 +7,7 @@ from giyu.controllers.pipeline import CustomResponse
 class GenericValidator:
 
     @staticmethod
-    def auth_header():
+    def auth_header() -> CustomResponse:
         body = request.headers
         rule = {"token": "required|string|min:1", "id": "required|string|min:1"}
         result, _, errors = validate(body, rule, return_info=True)

@@ -9,6 +9,9 @@ from giyu.controllers.users import UserController
 from giyu.validators.engineers import EngineerValidator
 from giyu.controllers.engineers import EngineerController
 
+from giyu.validators.sellers import SellerValidator
+from giyu.controllers.sellers import SellerController
+
 
 # Inicia aplicação e carrega variáveis de ambiente
 load_dotenv("config/app.env")
@@ -32,7 +35,7 @@ def login():
 
 
 @application.route("/engineer", methods=["GET", "POST"])
-def get_engineers():
+def engineers():
     if request.method == "GET":
         return Pipeline.run(
             GenericValidator.auth_header,
@@ -43,4 +46,19 @@ def get_engineers():
             GenericValidator.auth_header,
             EngineerValidator.new_engineer,
             EngineerController.new_engineer
+        )
+
+
+@application.route("/seller", methods=["GET", "POST"])
+def sellers():
+    if request.method == "GET":
+        return Pipeline.run(
+            GenericValidator.auth_header,
+            SellerController.get_all
+        )
+    elif request.method == "POST":
+        return Pipeline.run(
+            GenericValidator.auth_header,
+            SellerValidator.new_seller,
+            SellerController.new_seller
         )

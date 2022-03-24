@@ -26,6 +26,16 @@ class Engineers(Base):
     CreateOn = Column(DateTime, nullable=False)
 
 
+class Sellers(Base):
+    __tablename__ = "Sellers"
+    __table_args__ = {"schema": "shop"}
+
+    Id = Column(Integer, primary_key=True)
+    UserId = Column(Integer, ForeignKey("public.Users.Id"), nullable=False)
+    Name = Column(String, nullable=False)
+    CreateOn = Column(DateTime, nullable=False)
+
+
 def create_tables():
     Base.metadata.create_all(get_engine())
 
