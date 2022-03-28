@@ -1,7 +1,8 @@
 import sys
 from dotenv import load_dotenv
-from giyu.models.seed import seed_users, seed_engineers, seed_sellers
 from giyu.models.entities import create_tables, drop_tables
+from giyu.models.seed import seed_users, seed_engineers, seed_sellers,\
+    seed_materials
 
 
 load_dotenv("config/app.env")
@@ -19,6 +20,7 @@ def seed():
     seed_users()
     seed_engineers()
     seed_sellers()
+    seed_materials()
 
 
 def reset():

@@ -1,6 +1,8 @@
+from email.policy import default
 from giyu.models.connect import get_engine
 from sqlalchemy.orm import declarative_base
-from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey,\
+    Boolean
 
 
 Base = declarative_base()
@@ -33,6 +35,25 @@ class Sellers(Base):
     Id = Column(Integer, primary_key=True)
     UserId = Column(Integer, ForeignKey("public.Users.Id"), nullable=False)
     Name = Column(String, nullable=False)
+    CreateOn = Column(DateTime, nullable=False)
+
+
+class MaterialsTypes(Base):
+    __tablename__ = "MaterialsTypes"
+    __table_args__ = {"schema": "shop"}
+
+    Id = Column(Integer, primary_key=True)
+    Tag = Column(String, nullable=False)
+
+
+class Materials(Base):
+    __tablename__ = "Materials"
+    __table_args__ = {"schema": "shop"}
+
+    Id = Column(Integer, primary_key=True)
+    UserId = Column(Integer, ForeignKey("public.Users.Id"), nullable=False)
+    MaterialTypeId = Column(Integer, ForeignKey("shop.MaterialsTypes.Id"), nullable=False)
+    Description = Column(String, nullable=False)
     CreateOn = Column(DateTime, nullable=False)
 
 

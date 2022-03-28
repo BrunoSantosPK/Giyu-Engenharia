@@ -12,6 +12,9 @@ from giyu.controllers.engineers import EngineerController
 from giyu.validators.sellers import SellerValidator
 from giyu.controllers.sellers import SellerController
 
+from giyu.validators.materials import MaterialValidator
+from giyu.controllers.materials import MaterialController
+
 
 # Inicia aplicação e carrega variáveis de ambiente
 load_dotenv("config/app.env")
@@ -62,3 +65,26 @@ def sellers():
             SellerValidator.new_seller,
             SellerController.new_seller
         )
+
+
+@application.route("/material", methods=["GET", "POST"])
+def materials():
+    if request.method == "GET":
+        return Pipeline.run(
+            GenericValidator.auth_header,
+            MaterialController.get_all
+        )
+    elif request.method == "POST":
+        return Pipeline.run(
+            GenericValidator.auth_header,
+            MaterialValidator.new_material,
+            MaterialController.new_material
+        )
+
+
+@application.route("/material/types", methods=["GET"])
+def material_types():
+    return Pipeline.run(
+        GenericValidator.auth_header,
+        MaterialController.get_material_types
+    )
