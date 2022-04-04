@@ -15,6 +15,9 @@ from giyu.controllers.sellers import SellerController
 from giyu.validators.materials import MaterialValidator
 from giyu.controllers.materials import MaterialController
 
+from giyu.validators.items import ItemValidator
+from giyu.controllers.items import ItemController
+
 
 # Inicia aplicação e carrega variáveis de ambiente
 load_dotenv("config/app.env")
@@ -88,3 +91,35 @@ def material_types():
         GenericValidator.auth_header,
         MaterialController.get_material_types
     )
+
+
+@application.route("/item/<id>", methods=["GET"])
+def sellers_item(id: int):
+    return Pipeline.run(
+        GenericValidator.auth_header,
+        ItemController.get_sellers_by_item
+    )
+
+
+@application.route("/item/seller/<id>", methods=["GET"])
+def items_seller(id: int):
+    return Pipeline.run(
+        GenericValidator.auth_header,
+        ItemController.get_items_by_seller
+    )
+
+
+@application.route("/item", methods=["POST", "PUT"])
+def item_manager():
+    if request.method == "POST":
+        return Pipeline.run(
+            GenericValidator.auth_header,
+            ItemValidator.new_item,
+            ItemController.new_item
+        )
+    elif request.method == "PUT":
+        return Pipeline.run(
+            GenericValidator.auth_header,
+            ItemValidator.update_item,
+            ItemController.update_item
+        )

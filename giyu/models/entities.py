@@ -2,7 +2,7 @@ from email.policy import default
 from giyu.models.connect import get_engine
 from sqlalchemy.orm import declarative_base
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey,\
-    Boolean
+    Boolean, Float
 
 
 Base = declarative_base()
@@ -55,6 +55,23 @@ class Materials(Base):
     MaterialTypeId = Column(Integer, ForeignKey("shop.MaterialsTypes.Id"), nullable=False)
     Description = Column(String, nullable=False)
     CreateOn = Column(DateTime, nullable=False)
+
+
+class Items(Base):
+    __tablename__ = "Items"
+    __table_args__ = {"schema": "shop"}
+
+    Id = Column(Integer, primary_key=True)
+    MaterialId = Column(Integer, ForeignKey("shop.Materials.Id"), nullable=False)
+    SellerId = Column(Integer, ForeignKey("shop.Sellers.Id"), nullable=False)
+    CreateUserId = Column(Integer, ForeignKey("public.Users.Id"), nullable=False)
+    EditUserId = Column(Integer, ForeignKey("public.Users.Id"), nullable=True)
+    Active = Column(Boolean, nullable=False, default=True)
+    UnitPrice = Column(Float, nullable=False)
+    MinForDiscount = Column(Integer, nullable=False)
+    UnitPriceWithDiscount = Column(Float, nullable=False)
+    CreateOn = Column(DateTime, nullable=False)
+    EditOn = Column(DateTime, nullable=True)
 
 
 def create_tables():

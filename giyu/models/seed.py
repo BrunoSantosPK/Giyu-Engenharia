@@ -1,7 +1,7 @@
 from datetime import datetime
 from giyu.models.connect import get_session
 from giyu.models.entities import Users, Engineers, Sellers,\
-    MaterialsTypes, Materials
+    MaterialsTypes, Materials, Items
 
 
 def seed_users():
@@ -80,6 +80,19 @@ def seed_materials():
         session.add_all(data_types)
         session.commit()
         session.add_all(data_materials)
+        session.commit()
+    except BaseException as e:
+        print(e)
+        session.rollback()
+
+
+def seed_items():
+    session = get_session()
+    dt = datetime.utcnow()
+    data = []
+
+    try:
+        session.add_all(data)
         session.commit()
     except BaseException as e:
         print(e)
