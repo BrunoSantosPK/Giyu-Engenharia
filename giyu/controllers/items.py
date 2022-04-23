@@ -167,11 +167,54 @@ class ItemController:
                 route_response.set_status(401)
                 route_response.set_message(msg)
 
-            # Regras de negócio:
-            # 0. Transformar preços de inteiro pra decimal
-            # 1. Verificar se o preço unitário é maior que 0
-            # 2. Verificar se o preço com desconto é menor que o unitário
-            # 3. Verificar se o material + vendedor já está cadastrado
+            # Regra de negócio: o preço com desconto deve ser menor que o preço unitário
+            if valid:
+                if body["discountPrice"] >= body["unitPrice"]:
+                    valid = False
+                    route_response.set_status(444)
+                    route_response.set_message("Preço com desconto maior ou igual ao preço unitário.")
+
+            # Regra de negócio: os preços devem ser maiores que zero
+            if valid:
+                if body["discountPrice"] <= 0 or body["unitPrice"] <= 0:
+                    valid = False
+                    route_response.set_status(444)
+                    route_response.set_message("Os preços devem ser maiores que 0.")
+
+            # Regra de negócio: a quantidade para conceder desconto deve ser maior que 1
+            if valid:
+                if body["minDiscount"] <= 1:
+                    valid = False
+                    route_response.set_status(444)
+                    route_response.set_message("A quantidade para desconto deve ser maior que 1.")
+
+            # Verifica se material e vendedor já estão cadastrados
+            if valid:
+                q = session.query(Items).filter_by(
+                    MaterialId=body["material"],
+                    SellerId=body["seller"]
+                )
+                if len(q.all()) != 0:
+                    valid = False
+                    route_response.set_status(444)
+                    route_response.set_message("O material já está cadastrado para o vendedor.")
+
+            # Procede para criação do registro no banco
+            if valid:
+                price = body["unitPrice"] / 100.0
+                discout = body["discountPrice"] / 100.0
+
+                session.add(Items(
+                    MaterialId=body["material"],
+                    SellerId=body["seller"],
+                    CreateUserId=body["creator"],
+                    Active=True,
+                    UnitPrice=price,
+                    MinForDiscount=body["minDiscount"],
+                    UnitPriceWithDiscount=discout,
+                    CreateOn=datetime.utcnow()
+                ))
+                session.commit()
 
         except BaseException as e:
             # Captura erros internos
@@ -203,6 +246,39 @@ class ItemController:
                 valid = False
                 route_response.set_status(401)
                 route_response.set_message(msg)
+
+            # Regra de negócio: o preço com desconto deve ser menor que o preço unitário
+            if valid:
+                if body["discountPrice"] >= body["unitPrice"]:
+                    valid = False
+                    route_response.set_status(444)
+                    route_response.set_message("Preço com desconto maior ou igual ao preço unitário.")
+
+            # Regra de negócio: os preços devem ser maiores que zero
+            if valid:
+                if body["discountPrice"] <= 0 or body["unitPrice"] <= 0:
+                    valid = False
+                    route_response.set_status(444)
+                    route_response.set_message("Os preços devem ser maiores que 0.")
+
+            # Regra de negócio: a quantidade para conceder desconto deve ser maior que 1
+            if valid:
+                if body["minDiscount"] <= 1:
+                    valid = False
+                    route_response.set_status(444)
+                    route_response.set_message("A quantidade para desconto deve ser maior que 1.")
+
+            # Procede para criação do registro no banco
+            if valid:
+                session.query(Items).filter_by(Id=body["item"]).update({
+                    "EditUserId": body["editor"],
+                    "UnitPrice": body["unitPrice"] / 100.0,
+                    "MinForDiscount": body["minDiscount"],
+                    "UnitPriceWithDiscount": body["discountPrice"] / 100.0,
+                    "Active": body["active"],
+                    "EditOn": datetime.utcnow()
+                })
+                session.commit()
 
         except BaseException as e:
             # Captura erros internos

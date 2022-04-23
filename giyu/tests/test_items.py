@@ -1,5 +1,28 @@
+import random
 import generic
 import requests
+
+
+def generate_add(material: int, seller: int, creator: int, price: int, quantity: int, discount: int):
+    return {
+        "material": material,
+        "seller": seller,
+        "creator": creator,
+        "unitPrice": price,
+        "minDiscount": quantity,
+        "discountPrice": discount
+    }
+
+
+def generate_upd(item: int, editor: int, price: int, quantity: int, discount: int, active: int):
+    return {
+        "item": item,
+        "editor": editor,
+        "unitPrice": price,
+        "minDiscount": quantity,
+        "discountPrice": discount,
+        "active": active
+    }
 
 
 def test_get_sellers_by_material_id():
@@ -51,47 +74,94 @@ def test_get_items_by_seller_long_page():
 
 
 def test_new_item():
-    pass
+    token, id_user = generic.success_login()
+    head = {"token": token, "id": id_user}
+    cont, limit, success = 0, 200, False
+
+    while True:
+        if cont > limit:
+            success = True
+            break
+
+        material = random.randint(1, 14)
+        seller = random.randint(1, 4)
+        price = random.randint(100, 10000)
+        discount = int(random.random() * price)
+
+        req = generate_add(material, seller, 1, price, random.randint(3, 10), discount)
+        res = requests.post(f"{generic.get_base_url()}/item", json=req, headers=head)
+        status = res.json()["statusCode"]
+
+        if status == 200:
+            success = True
+            break
+        else:
+            cont = cont + 1
+
+    assert success == True and cont <= limit
 
 
-def test_new_item_invalid_body():
-    pass
+def test_new_item_invalid_rule():
+    token, id_user = generic.success_login()
+    head = {"token": token, "id": id_user}
+    reqs = [
+        generate_add(1, 1, 1, 100, 2, 90),
+        generate_add(1, 3, 1, 100, 2, 120),
+        generate_add(1, 3, 1, 100, 1, 90)
+    ]
+
+    results = []
+    for req in reqs:
+        res = requests.post(f"{generic.get_base_url()}/item", json=req, headers=head)
+        results.append(res.json()["statusCode"])
+
+    assert all(r == 444 for r in results)
 
 
 def test_new_item_without_jwt():
-    req = {
-        "material": 1,
-        "seller": 1,
-        "creator": 1,
-        "unitPrice": 150,
-        "minDiscount": 2,
-        "discountPrice": 130
-    }
-    
+    req = generate_add(1, 1, 1, 150, 2, 130)
     res_invalid = generic.test_wrong_header("item", method="post", body=req)
     res_not_auth = generic.test_wrong_jwt("item", method="post", body=req)
     assert 200 not in res_invalid and res_not_auth == 401
 
 
-def test_new_item_already_registered():
-    pass
-
-
-def test_new_item_wrong_discount():
-    pass
-
-
 def test_update_item():
-    pass
+    token, id_user = generic.success_login()
+    head = {"token": token, "id": id_user}
+    
+    price = random.randint(100, 10000)
+    quantity = random.randint(2, 20)
+    discount = int(random.random() * price)
+    active = random.randint(0, 1)
+    req = generate_upd(1, 1, price, quantity, discount, active)
+
+    res = requests.put(f"{generic.get_base_url()}/item", json=req, headers=head)
+    assert res.json()["statusCode"] == 200
 
 
 def test_update_item_without_jwt():
-    pass
+    price = random.randint(100, 10000)
+    quantity = random.randint(2, 20)
+    discount = int(random.random() * price)
+    active = random.randint(0, 1)
+    req = generate_upd(1, 1, price, quantity, discount, active)
+
+    res_invalid = generic.test_wrong_header("item", method="put", body=req)
+    res_not_auth = generic.test_wrong_jwt("item", method="put", body=req)
+    assert 200 not in res_invalid and res_not_auth == 401
 
 
 def test_update_item_wrong_body():
-    pass
+    token, id_user = generic.success_login()
+    head = {"token": token, "id": id_user}
+    reqs = [
+        generate_upd(1, 1, 150, 5, 160, 1),
+        generate_upd(1, 1, 150, 1, 140, 0)
+    ]
 
+    results = []
+    for req in reqs:
+        res = requests.put(f"{generic.get_base_url()}/item", json=req, headers=head)
+        results.append(res.json()["statusCode"])
 
-def test_update_item_wrong_discount():
-    pass
+    assert all(r == 444 for r in results)

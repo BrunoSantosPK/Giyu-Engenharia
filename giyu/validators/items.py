@@ -36,10 +36,10 @@ class ItemValidator:
         rule = {
             "item": "required|integer|min:1",
             "editor": "required|integer|min:1",
-            "unitPrice": "required|float|min:0",
+            "unitPrice": "required|integer|min:1",
             "minDiscount": "required|integer|min:1",
-            "discountPrice": "required|float|min:0",
-            "active": "required|boolean"
+            "discountPrice": "required|integer|min:1",
+            "active": "required|integer|min:0|max:1"
         }
         result, _, errors = validate(body, rule, return_info=True)
 
