@@ -56,6 +56,7 @@ class EngineerController:
                     "engineerTitle": o.Title
                 } for o in total_data]
                 route_response.set_attr("data", data)
+                route_response.set_attr("page", page)
                 route_response.set_attr("totalPages", total_pages)
 
         except BaseException as e:
